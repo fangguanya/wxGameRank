@@ -19,7 +19,7 @@ export default class GameRankingList extends cc.Component {
     start() {
         this.removeChild();
         if (CC_WECHATGAME) {
-            window.wx.onMessage(data => {
+            wx.onMessage(data => {
                 cc.log("接收主域发来消息：", data)
                 if (data.messageType == 0) {//移除排行榜
                     this.removeChild();
@@ -37,11 +37,17 @@ export default class GameRankingList extends cc.Component {
             this.fetchFriendData(1000);
             // this.gameOverRank(1000);
         }
+
+        this.rankingScrollView.node.on('touch-up',()=>{
+            console.error("RRRRRRRRRRRRRRRRRRRKKKKKKKKKKK")
+        })
     }
+
+
 
     submitScore(MAIN_MENU_NUM, score) { //提交得分
         if (CC_WECHATGAME) {
-            window.wx.getUserCloudStorage({
+            wx.getUserCloudStorage({
                 // 以key/value形式存储
                 keyList: [MAIN_MENU_NUM],
                 success: function (getres) {
@@ -52,7 +58,7 @@ export default class GameRankingList extends cc.Component {
                         }
                     }
                     // 对用户托管数据进行写数据操作
-                    window.wx.setUserCloudStorage({
+                    wx.setUserCloudStorage({
                         KVDataList: [{key: MAIN_MENU_NUM, value: "" + score}],
                         success: function (res) {
                             console.log('setUserCloudStorage', 'success', res)

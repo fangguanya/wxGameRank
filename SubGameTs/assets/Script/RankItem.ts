@@ -19,6 +19,8 @@ export default class RankItem extends cc.Component {
     }
 
     init(rank, data) {
+        let canvas = wx.getSharedCanvas()
+        console.error("canvas in sub-x:"+canvas.width+",y:"+canvas.height)
         let avatarUrl = data.avatarUrl;
         // let nick = data.nickname.length <= 10 ? data.nickname : data.nickname.substr(0, 10) + "...";
         let nick = data.nickname;

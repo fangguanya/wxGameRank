@@ -11,14 +11,19 @@ export default class RankingView extends cc.Component {
     gameOverButton: cc.Node = null;
     @property(cc.Sprite)
     rankingScrollView: cc.Sprite = null;//显示排行榜
+    @property(cc.Texture2D)
+    tex:cc.Texture2D = null
 
     start() {
         if (CC_WECHATGAME) {
-            window.wx.showShareMenu({withShareTicket: true});//设置分享按钮，方便获取群id展示群排行榜
+            wx.showShareMenu({withShareTicket: true});//设置分享按钮，方便获取群id展示群排行榜
             this.tex = new cc.Texture2D();
-            window.sharedCanvas.width = 720;
-            window.sharedCanvas.height = 1280;
-            window.wx.postMessage({
+
+            let openDataContext = wx.getOpenDataContext()
+            let sharedCanvas = openDataContext.canvas
+            sharedCanvas.width = 720;
+            sharedCanvas.height = 1280;
+            wx.postMessage({
                 messageType: 1,
                 MAIN_MENU_NUM: "x1"
             });
@@ -28,7 +33,7 @@ export default class RankingView extends cc.Component {
     friendButtonFunc(event) {
         if (CC_WECHATGAME) {
             // 发消息给子域
-            window.wx.postMessage({
+            wx.postMessage({
                 messageType: 1,
                 MAIN_MENU_NUM: "x1"
             });
@@ -39,10 +44,10 @@ export default class RankingView extends cc.Component {
 
     groupFriendButtonFunc(event) {
         if (CC_WECHATGAME) {
-            window.wx.shareAppMessage({
+            wx.shareAppMessage({
                 success: (res) => {
                     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                        window.wx.postMessage({
+                        wx.postMessage({
                             messageType: 5,
                             MAIN_MENU_NUM: "x1",
                             shareTicket: res.shareTickets[0]
@@ -57,7 +62,7 @@ export default class RankingView extends cc.Component {
 
     gameOverButtonFunc (event) {
         if (CC_WECHATGAME) {
-            window.wx.postMessage({// 发消息给子域
+            wx.postMessage({// 发消息给子域
                 messageType: 4,
                 MAIN_MENU_NUM: "x1"
             });
@@ -69,7 +74,7 @@ export default class RankingView extends cc.Component {
     submitScoreButtonFunc(){
         let score = 123;
         if (CC_WECHATGAME) {
-            window.wx.postMessage({
+            wx.postMessage({
                 messageType: 3,
                 MAIN_MENU_NUM: "x1",
                 score: score,
@@ -81,8 +86,10 @@ export default class RankingView extends cc.Component {
 
     // 刷新子域的纹理
     _updateSubDomainCanvas() {
-        if (window.sharedCanvas != undefined) {
-            this.tex.initWithElement(window.sharedCanvas);
+        let openDataContext = wx.getOpenDataContext()
+        let sharedCanvas = openDataContext.canvas
+        if (sharedCanvas != undefined) {
+            this.tex.initWithElement(sharedCanvas);
             this.tex.handleLoadedTexture();
             this.rankingScrollView.spriteFrame = new cc.SpriteFrame(this.tex);
         }
